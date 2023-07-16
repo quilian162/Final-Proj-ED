@@ -2,190 +2,159 @@
 #include <stdlib.h>
 #include "agenda.h"
 
-Evento *agenda = NULL;
+//Inicializa a agenda
+void inicializarAgenda(Evento **agenda) {
+    *agenda = NULL;
+}
 
-void incluirEvento() {
-    int dia, mes, ano, hora, minuto;
+void incluir(Evento **agenda){
+    Evento *novo = (Evento*)malloc(sizeof(Evento)); //Alocamos espaco para nossa agenda
 
-    printf("Informe a data e hora do evento (dia mes ano hora minuto): ");
-    scanf("%d %d %d %d %d", &dia, &mes, &ano, &hora, &minuto);
+    printf("Digite o código: ");
+    scanf("%d", &(novo->cod));
+    printf("Digite a data no seguinte formato: dia/mes/ano hora:minuto");
+    scanf("%d/%d/%d %d:%d", &(novo->data.dia), &(novo->dataEvento.mes), &(novo->dataEvento.ano), 
+            &(novo->dataEvento.hora), &(novo->dataEvento.minuto));
+    printf("Digite a duração: ");
+    scanf("%f", &(novo->duracao));
+    printf("Digite a descrição: ");
+    scanf(" %[^\n]", novo->descricao);
 
-    Evento *novoEvento = (Evento *)malloc(sizeof(Evento));
-    novoEvento->codigo = rand();  // Gera um código aleatório
-    novoEvento->dataEvento.dia = dia;
-    novoEvento->dataEvento.mes = mes;
-    novoEvento->dataEvento.ano = ano;
-    novoEvento->dataEvento.hora = hora;
-    novoEvento->dataEvento.minuto = minuto;
-    printf("Informe a descrição do evento: ");
-    scanf(" %[^\n]", novoEvento->descricao);
-    printf("Informe a duração do evento: ");
-    scanf("%f", &(novoEvento->duracao));
-    novoEvento->proximo = NULL;
-
-    // Verifica se já existe um evento agendado para a mesma data e horário
-    Evento *temp = agenda;
-    while (temp != NULL) {
-        if (temp->dataEvento.dia == dia && temp->dataEvento.mes == mes && temp->dataEvento.ano == ano &&
-            temp->dataEvento.hora == hora && temp->dataEvento.minuto == minuto) {
-            printf("Já existe um evento agendado para a mesma data e horário.\n");
-            free(novoEvento);
+    // Verificamos a existencia de um evento ja criado na mesma data e horario
+    Evento *aux = *agenda;
+    while (aux != NULL){
+        if (aux->dataEvento.dia == novo->dataEvento.dia && aux->dataEvento.mes == novo->dataEvento.mes &&
+            aux->dataEvento.ano == novo->dataEvento.ano && aux->dataEvento.hora == novo->dataEvento.hora &&
+            aux->dataEvento.minuto == novo->dataEvento.minuto){
+            printf("Já possui um evento nesta data e horário.\n");
+            free(novo);
             return;
         }
-        temp = temp->proximo;
+        aux = aux->next;
     }
 
-    // Insere o novo evento na agenda
-    if (agenda == NULL) {
-        agenda = novoEvento;
-    } else {
-        temp = agenda;
-        while (temp->proximo != NULL) {
-            temp = temp->proximo;
-        }
-        temp->proximo = novoEvento;
-    }
+    //Caso passe na verificaçao, criaremos o evento
+    novo->next = *agenda;
+    *agenda = novo;
 
     printf("Evento incluído com sucesso!\n");
 }
 
-void consultarPorData() {
-    int dia, mes, ano;
-
-    printf("Informe a data para consulta (dia mes ano): ");
-    scanf("%d %d %d", &dia, &mes, &ano);
-
-    Evento *temp = agenda;
-    int encontrou = 0;
-
-    printf("Eventos na data informada:\n");
-
-    while (temp != NULL) {
-        if (temp->dataEvento.dia == dia && temp->dataEvento.mes == mes && temp->dataEvento.ano == ano) {
-            printf("Código: %d\n", temp->codigo);
-            printf("Data: %d/%d/%d\n", temp->dataEvento.dia, temp->dataEvento.mes, temp->dataEvento.ano);
-            printf("Hora: %d:%d\n", temp->dataEvento.hora, temp->dataEvento.minuto);
-            printf("Duração: %.2f\n", temp->duracao);
-            printf("Descrição: %s\n", temp->descricao);
-            printf("\n");
-            encontrou = 1;
-        }
-        temp = temp->proximo;
-    }
-
-    if (!encontrou) {
-        printf("Nenhum evento encontrado para a data informada.\n");
-    }
-}
-
-void consultarPorDataEHora() {
+void consultar(Evento *agenda){
     int dia, mes, ano, hora, minuto;
 
-    printf("Informe a data e hora para consulta (dia mes ano hora minuto): ");
-    scanf("%d %d %d %d %d", &dia, &mes, &ano, &hora, &minuto);
+    printf("Digite a data para consulta (dia/mes/ano): ");
+    scanf("%d/%d/%d", &dia, &mes, &ano);
 
-    Evento *temp = agenda;
-    int encontrou = 0;
+    printf("Digite a hora para consulta (hora:minuto): ");
+    scanf("%d:%d", &hora, &minuto);
 
-    printf("Eventos na data e hora informadas:\n");
+    Evento *aux = agenda;
+    int controle = 0;
 
-    while (temp != NULL) {
-        if (temp->dataEvento.dia == dia && temp->dataEvento.mes == mes && temp->dataEvento.ano == ano &&
-            temp->dataEvento.hora == hora && temp->dataEvento.minuto == minuto) {
-            printf("Código: %d\n", temp->codigo);
-            printf("Data: %d/%d/%d\n", temp->dataEvento.dia, temp->dataEvento.mes, temp->dataEvento.ano);
-            printf("Hora: %d:%d\n", temp->dataEvento.hora, temp->dataEvento.minuto);
-            printf("Duração: %.2f\n", temp->duracao);
-            printf("Descrição: %s\n", temp->descricao);
+    printf("Consultando evento fornecido:\n");
+
+    while (aux != NULL){
+        if (aux->dataEvento.dia == dia && aux->dataEvento.mes == mes &&
+            aux->dataEvento.ano == ano && aux->dataEvento.hora == hora &&
+            aux->dataEvento.minuto == minuto){
+            controle = 1;
+            printf("Código: %d\n", aux->cod);
+            printf("Data: %d/%d/%d\n", aux->dataEvento.dia, aux->dataEvento.mes, aux->dataEvento.ano);
+            printf("Hora: %d:%d\n", aux->dataEvento.hora, aux->dataEvento.minuto);
+            printf("Duração: %.2f\n", aux->duracao);
+            printf("Descrição: %s\n", aux->descricao);
             printf("\n");
-            encontrou = 1;
             break;
         }
-        temp = temp->proximo;
+        aux = aux->next;
     }
 
-    if (!encontrou) {
-        printf("Nenhum evento encontrado para a data e hora informadas.\n");
+    if (!controle){
+        printf("Agenda vazia.\n");
     }
 }
 
-void alterarEvento() {
+void alterar(Evento *agenda){
     int dia, mes, ano, hora, minuto;
 
-    printf("Informe a data e hora do evento a ser alterado (dia mes ano hora minuto): ");
-    scanf("%d %d %d %d %d", &dia, &mes, &ano, &hora, &minuto);
+    printf("Digite a data e hora do evento que deseja alterar (dia/mes/ano hora:minuto): ");
+    scanf("%d/%d/%d %d:%d", &dia, &mes, &ano, &hora, &minuto);
 
-    Evento *temp = agenda;
-    int encontrou = 0;
+    Evento *aux = agenda;
+    int controle = 0;
 
-    while (temp != NULL) {
-        if (temp->dataEvento.dia == dia && temp->dataEvento.mes == mes && temp->dataEvento.ano == ano &&
-            temp->dataEvento.hora == hora && temp->dataEvento.minuto == minuto) {
+    while (aux != NULL){
+        if (aux->dataEvento.dia == dia && aux->dataEvento.mes == mes && aux->dataEvento.ano == ano &&
+            aux->dataEvento.hora == hora && aux->dataEvento.minuto == minuto){
             printf("Informe a nova descrição do evento: ");
-            scanf(" %[^\n]", temp->descricao);
+            scanf(" %[^\n]", aux->descricao);
             printf("Informe a nova duração do evento: ");
-            scanf("%f", &(temp->duracao));
+            scanf("%f", &(aux->duracao));
             printf("Evento alterado com sucesso!\n");
-            encontrou = 1;
+            controle = 1;
             break;
         }
-        temp = temp->proximo;
+        aux = aux->next;
     }
 
-    if (!encontrou) {
+    if (!controle){
         printf("Nenhum evento encontrado para a data e hora informadas.\n");
     }
 }
 
-void excluirEvento() {
+void excluir(Evento **agenda){
     int dia, mes, ano, hora, minuto;
 
-    printf("Informe a data e hora do evento a ser excluído (dia mes ano hora minuto): ");
-    scanf("%d %d %d %d %d", &dia, &mes, &ano, &hora, &minuto);
+    printf("Digite a data e hora do evento que quer excluir no seguinte formato: dia/mes/ano hora:minuto");
+    scanf("%d/%d/%d %d:%d", &dia, &mes, &ano, &hora, &minuto);
 
-    Evento *temp = agenda;
-    Evento *anterior = NULL;
-    int encontrou = 0;
+    Evento *aux = *agenda;
+    Evento *prev = NULL;
+    int controle = 0;
 
-    while (temp != NULL) {
-        if (temp->dataEvento.dia == dia && temp->dataEvento.mes == mes && temp->dataEvento.ano == ano &&
-            temp->dataEvento.hora == hora && temp->dataEvento.minuto == minuto) {
-            if (anterior == NULL) {
-                agenda = temp->proximo;
-            } else {
-                anterior->proximo = temp->proximo;
+    while (aux != NULL){
+        if (aux->dataEvento.dia == dia && aux->dataEvento.mes == mes && aux->dataEvento.ano == ano &&
+            aux->dataEvento.hora == hora && aux->dataEvento.minuto == minuto){
+            if (prev == NULL){
+                *agenda = aux->next;
+            } else{
+                prev->next = aux->next;
             }
-            free(temp);
-            printf("Evento excluído com sucesso!\n");
-            encontrou = 1;
+            free(aux);
+            printf("Evento excluido.\n");
+            controle = 1;
             break;
         }
-        anterior = temp;
-        temp = temp->proximo;
+        prev = aux;
+        aux = aux->next;
     }
 
-    if (!encontrou) {
-        printf("Nenhum evento encontrado para a data e hora informadas.\n");
+    if (!controle){
+        printf("Impossivel excluir pois o evento informado é inexistente.\n");
     }
 }
 
-void listarTodos() {
-    Evento *temp = agenda;
+// Funcao que lista os eventos criados pelo usuario
+void listar(Evento *agenda){
+    Evento *aux = agenda;
 
-    if (temp == NULL) {
+    // Testamos se a agenda esta vazia (NULL)
+    if (aux == NULL){
         printf("Agenda vazia.\n");
         return;
     }
 
-    printf("Lista de eventos:\n");
+    printf("Listando todos os eventos:\n");
 
-    while (temp != NULL) {
-        printf("Código: %d\n", temp->codigo);
-        printf("Data: %d/%d/%d\n", temp->dataEvento.dia, temp->dataEvento.mes, temp->dataEvento.ano);
-        printf("Hora: %d:%d\n", temp->dataEvento.hora, temp->dataEvento.minuto);
-        printf("Duração: %.2f\n", temp->duracao);
-        printf("Descrição: %s\n", temp->descricao);
+    // Percorremos os "nós" da lista até o fim e imprimimos os eventos correspondentes
+    while (aux != NULL){ 
+        printf("Código: %d\n", aux->cod);
+        printf("Data: %d/%d/%d\n", aux->dataEvento.dia, aux->dataEvento.mes, aux->dataEvento.ano);
+        printf("Hora: %d:%d\n", aux->dataEvento.hora, aux->dataEvento.minuto);
+        printf("Duração: %.2f\n", aux->duracao);
+        printf("Descrição: %s\n", aux->descricao);
         printf("\n");
-        temp = temp->proximo;
+        aux = aux->next;
     }
 }
