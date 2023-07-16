@@ -1,29 +1,26 @@
 #ifndef AGENDA_H
 #define AGENDA_H
 
-struct _data {
-    int dia;
-    int mes;
-    int ano;
-    int hora;
-    int minuto;
-};
-typedef struct _data Data;
-
-struct _evento {
-    int codigo;
-    Data dataEvento;
+typedef struct evento {
+    int cod;
     float duracao;
     char descricao[100];
-    struct _evento *proximo;
-};
-typedef struct _evento Evento;
+    Data dataEvento;
+    struct evento *next;
+} Evento;
 
-void incluirEvento();
-void consultarPorData();
-void consultarPorDataEHora();
-void alterarEvento();
-void excluirEvento();
-void listarTodos();
+typedef struct data {
+    int ano;
+    int mes;
+    int dia;
+    int hora;
+    int minuto;
+} Data;
+
+void incluir();
+void consultar();
+void alterar();
+void excluir();
+void listar();
 
 #endif
