@@ -1,55 +1,55 @@
-#include <stdio.h>
-#include "agenda.h"
+int main(){
+    Evento *agenda; //Criamos uma variavel ponteiro do tipo Evento chamada agenda
+    inicializarAgenda(&agenda); //chamamos a funcao para criar a agenda
 
-int main() {
     int op;
 
-    do {
-        printf("UFFSAgenda - Menu\n");
-        printf("1. Incluir evento\n");
-        printf("2. Consultar por data\n");
-        printf("3. Consultar por data e hora\n");
-        printf("4. Alterar evento\n");
-        printf("5. Excluir evento\n");
-        printf("6. Listar todos\n");
-        printf("7. Sair\n");
-        printf("Escolha uma opção: ");
+    printf("--- Bem vindo a UFFSAgenda ---\n");
+
+    //Menu que o usuario visualiza
+    do{
+        printf("--- Escolha uma opção ---\n");
+        printf("1 - Incluir\n");
+        printf("2 - Consultar\n");
+        printf("3 - Alterar\n");
+        printf("4 - Excluir\n");
+        printf("5 - Listar todos\n");
+        printf("6 - Sair\n");
+        printf("Digite sua escolha: ");
         scanf("%d", &op);
 
-        switch (op) {
+        //switch para chamar a funcao de escolha do usuario
+        switch (op){
             case 1:
-                incluirEvento();
+                incluir(&agenda);
                 break;
             case 2:
-                consultarPorData();
+                consultar(agenda);
                 break;
             case 3:
-                consultarPorDataEHora();
+                alterar(agenda);
                 break;
             case 4:
-                alterarEvento();
+                excluir(&agenda);
                 break;
             case 5:
-                excluirEvento();
+                listar(agenda);
                 break;
             case 6:
-                listarTodos();
+                printf("Finalizando.\n");
                 break;
-            case 7:
-                printf("Programa finalizado.\n");
-                break;
-            default:
-                printf("Opção inválida. Tente novamente.\n");
+            default: //mensagem default caso outra opcao nao correspondente seja fornecida
+                printf("Opção não corresponde a nenhuma alternativa.\n");
         }
         printf("\n");
-    } while (op != 7);
+    } while (op != 6);
 
-    // Libera a memória alocada para os eventos na agenda
-    Evento *temp = agenda;
-    while (temp != NULL) {
-        Evento *prox = temp->proximo;
-        free(temp);
-        temp = prox;
+    // Criamos um ponteiro auxiliar para liberar a memoria alocada pelo sistema
+    Evento *aux = agenda;
+    while (aux != NULL){
+        Evento *next = aux->next;
+        free(aux);
+        aux = next;
     }
 
     return 0;
