@@ -13,7 +13,7 @@ void incluir(Evento **agenda){
     printf("Digite o código: ");
     scanf("%d", &(novo->cod));
     printf("Digite a data no seguinte formato: dia/mes/ano hora:minuto");
-    scanf("%d/%d/%d %d:%d", &(novo->data.dia), &(novo->dataEvento.mes), &(novo->dataEvento.ano), 
+    scanf("%d/%d/%d %d:%d", &(novo->dataEvento.dia), &(novo->dataEvento.mes), &(novo->dataEvento.ano), 
             &(novo->dataEvento.hora), &(novo->dataEvento.minuto));
     printf("Digite a duração: ");
     scanf("%f", &(novo->duracao));
