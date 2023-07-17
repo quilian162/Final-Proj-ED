@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "agenda.h"
+
 int main(){
     Evento *agenda; //Criamos uma variavel ponteiro do tipo Evento chamada agenda
     inicializarAgenda(&agenda); //chamamos a funcao para criar a agenda
