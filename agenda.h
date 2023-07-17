@@ -1,14 +1,6 @@
 #ifndef AGENDA_H
 #define AGENDA_H
 
-typedef struct evento {
-    int cod;
-    float duracao;
-    char descricao[100];
-    Data dataEvento;
-    struct evento *next;
-} Evento;
-
 typedef struct data {
     int ano;
     int mes;
@@ -16,6 +8,14 @@ typedef struct data {
     int hora;
     int minuto;
 } Data;
+
+typedef struct evento {
+    int cod;
+    float duracao;
+    char descricao[100];
+    Data dataEvento;
+    struct evento *next;
+} Evento;
 
 void incluir();
 void consultar();
